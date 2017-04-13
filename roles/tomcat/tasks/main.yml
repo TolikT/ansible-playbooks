@@ -1,0 +1,80 @@
+---
+# steps from https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-8-on-centos-7 
+
+- name: install Java
+  yum:
+    name: java-1.7.0-openjdk-devel
+    state: present
+
+- name: add tomcat group
+  group:
+    name: tomcat
+    state: present # default, but more visible
+
+- name: create tomcat user
+  user:
+    name: tomcat
+    shell: /bin/nologin
+    group: tomcat
+    home: /opt/tomcat
+    createhome: no
+
+- name: download tomcat archive
+  get_url:
+    url: http://apache-mirror.rbc.ru/pub/apache/tomcat/tomcat-8/v8.5.13/bin/apache-tomcat-8.5.13.tar.gz
+    dest: /opt
+    checksum: sha1:521a2f487926985211aff9863229eae2af9f3715
+
+#- name: create tomcat directory
+#  file:
+#    path: /opt/tomcat
+#    state: directory
+
+#- name: extract tomcat archive and delete after that
+#  command: tar xvf apache-tomcat-8.5.13.tar.gz -C /opt/tomcat --strip-components=1 && rm -f apache-tomcat-8.5.13.tar.gz
+#  args:
+#    chdir: /opt
+
+# TODO: need to test - not needed behavior
+- name: exract tomcat archive
+  unarchive:
+    src: /opt/apache-tomcat-8.5.13.tar.gz
+    dest: /opt
+    remote_src: True
+    group: tomcat
+    mode: g+rx
+
+#- name: change files attributes
+#  file:
+#    path: /opt/tomcat
+#    state: directory
+#    recurse: yes
+#    group: tomcat
+#    mode: g+rx
+
+- name: change owner for directories
+  file:
+    path: "/opt/apache-tomcat-8.5.13/{{ item }}" 
+    state: directory
+    recurse: yes
+    owner: tomcat
+  with_items:
+    - webapps
+    - work
+    - temp
+    - logs
+
+- name: install systemd unit file
+  copy:
+    src: tomcat.service
+    dest: /etc/systemd/system/tomcat.service
+
+- name: systemctl commands
+  systemd:
+    daemon_reload: yes
+    name: tomcat
+    enabled: yes
+    state: started
+
+- name: wait for tomcat start
+  wait_for: port=8080
