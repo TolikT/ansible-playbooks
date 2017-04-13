@@ -1,0 +1,24 @@
+---
+
+- name: install java
+  yum:
+    name: java-1.7.0-openjdk-devel
+    state: present
+
+- name: create jenkins_home dir
+  file:
+    path: /var/jenkins_home
+    state: directory
+    owner: tomcat
+    group: tomcat
+    mode: 0755
+
+- name: download jenkins.war and restart tomcat
+  get_url:
+    url: http://mirrors.jenkins.io/war-stable/2.46.1/jenkins.war
+    dest: /opt/apache-tomcat-8.5.13/webapps
+    checksum: sha256:33a3f4d983c6188a332291e1d974afa0a2ee96a0ae3cb6dd4f2098086525f9f1
+    owner: tomcat
+    group: tomcat
+    mode: 0755
+  notify: restart tomcat
