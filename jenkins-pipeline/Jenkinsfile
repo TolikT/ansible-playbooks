@@ -1,0 +1,35 @@
+try {
+    node {
+		ws {
+			stage "echo in parallel"
+			parallel firstTask : {
+					echo "Hello Jenkins 1"
+			}, secondTask : {
+				echo "Hello Jenkins 2"
+			}
+				
+		
+			stage "show network connections"
+			sh "netstat -an" 
+		
+			stage "promotion"
+			timeout(30) {
+				userInput = input(
+					id: 'userInput', message: 'Let\'s promote?', parameters: [
+					[$class: 'TextParameterDefinition', defaultValue: 'default text', description: 'Type any text', name: 'text']
+				])
+			}
+			echo "Text: ${userInput}"
+			
+			currentBuild.result = 'SUCCESS'
+		}
+	}
+}
+catch (err){ 
+    def user = err.getCauses()[0].getUser()
+    if('SYSTEM' == user.toString()) { 
+        currentBuild.result = 'SUCCESS'
+    } else {
+        currentBuild.result = 'FAILURE'
+    }
+}
