@@ -1,0 +1,18 @@
+---
+- hosts: centos7
+  become: yes
+  become_method: su
+  become_user: root
+
+  pre_tasks:
+     - shell: echo "started deployment for centos7 hosts"
+
+     - name: disable fingerprint checking that may be enabled; when enabled, causes ssh issues
+       command: authconfig --disablefingerprint --update
+ 
+  roles:
+     - tomcat
+     - jenkins
+
+  post_tasks:
+     - shell: echo "successful deployment for centos7 hosts"
