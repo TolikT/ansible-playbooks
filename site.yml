@@ -5,8 +5,6 @@
   become_user: root
 
   pre_tasks:
-     - shell: echo "started deployment for centos7 hosts"
-
      - name: disable fingerprint checking that may be enabled; when enabled, causes ssh issues
        command: authconfig --disablefingerprint --update
  
@@ -15,4 +13,5 @@
      - jenkins
 
   post_tasks:
-     - shell: echo "successful deployment for centos7 hosts"
+     - name: wait for tomcat start
+       wait_for: port=8080
