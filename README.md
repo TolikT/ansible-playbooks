@@ -1,11 +1,12 @@
 # tomcat-jenkins
 jenkins inside tomcat deployment
 
-## current issues
-https://github.com/ansible/ansible/issues/14426 - as workaround pushed configuration as root
+## possible issues
+1. https://github.com/ansible/ansible/issues/14426 - as workaround pushed configuration as root
+2. https://github.com/ansible/ansible/issues/13856 - installed Windows Management Framework 4.0
 
 ## run command
-ansible-playbook -i hosts site.yml
+ansible-playbook -i hosts site.yml --ask-vault-pass
 
 ## how-to: vault encrypting
 ansible-vault create filename 
