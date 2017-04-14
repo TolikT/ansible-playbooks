@@ -1,0 +1,14 @@
+---
+
+- name: ensure that java is installed
+  win_chocolatey:
+    name: jdk8
+    force: False
+    state: present
+
+- name: download jenkins app and exec handler
+  win_get_url:
+    url: http://mirrors.jenkins.io/war-stable/2.46.1/jenkins.war
+    force: False
+    dest: 'C:\Program Files\Apache Software Foundation\tomcat\apache-tomcat-8.0.33\webapps\jenkins.war'
+  notify: restart tomcat

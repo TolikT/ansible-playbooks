@@ -1,0 +1,4 @@
+---
+
+- name: restart tomcat
+  win_shell: 'net stop Tomcat8; net start Tomcat8'
