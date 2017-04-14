@@ -1,5 +1,5 @@
-#[windows]
-#191.168.0.100
+[windows7]
+192.168.214.130
 
 [centos7]
 192.168.214.131	ansible_connection=ssh	ansible_user=root
@@ -7,3 +7,4 @@
 #just for fun
 [all_servers:children]
 centos7
+windows7
