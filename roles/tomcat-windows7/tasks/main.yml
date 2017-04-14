@@ -1,0 +1,20 @@
+---
+
+- name: install java
+  win_chocolatey:
+    name: jdk8
+    force: False
+    state: present
+
+- name: install tomcat
+  win_chocolatey:
+    name: tomcat
+    force: False
+    state: present
+    version: 8.0.33
+
+- name: configure tomcat users
+  win_copy:
+    src: files/tomcat-users.xml
+    force: True
+    dest: 'C:\Program Files\Apache Software Foundation\tomcat\apache-tomcat-8.0.33\conf\'
