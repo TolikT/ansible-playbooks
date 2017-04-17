@@ -10,11 +10,7 @@ try {
 				
 		
 			stage "show network connections"
-			try {	
-				sh "netstat -an" 
-			} catch(err) {
-				bat "netstat -an"
-			}
+			println "netstat -an".execute().text
 		
 			stage "promotion"
 			timeout(30) {
