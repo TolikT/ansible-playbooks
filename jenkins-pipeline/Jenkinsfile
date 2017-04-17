@@ -10,9 +10,9 @@ try {
 				
 		
 			stage "show network connections"
-			if (System.properties['os.name'].toLowerCase().contains('linux')) {
+			try {	
 				sh "netstat -an" 
-			} else {
+			} catch(err) {
 				bat "netstat -an"
 			}
 		
