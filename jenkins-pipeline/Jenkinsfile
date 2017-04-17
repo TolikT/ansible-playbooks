@@ -10,7 +10,11 @@ try {
 				
 		
 			stage "show network connections"
-			sh "netstat -an" 
+			if (System.properties['os.name'].toLowerCase().contains('linux')) {
+				sh "netstat -an" 
+			} else {
+				bat "netstat -an"
+			}
 		
 			stage "promotion"
 			timeout(30) {
