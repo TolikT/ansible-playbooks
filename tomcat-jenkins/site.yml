@@ -1,24 +1,19 @@
 ---
-
 - hosts: centos7
   become: yes
   become_method: su
   become_user: root
-
   pre_tasks:
      - name: disable fingerprint checking that may be enabled; when enabled, causes ssh issues
        command: authconfig --disablefingerprint --update
- 
   roles:
      - tomcat-centos7
      - jenkins-centos7
-
   post_tasks:
      - name: wait for tomcat start
        wait_for: port=8080
 
 - hosts: windows7
-
   roles:
      - tomcat-windows7
      - jenkins-windows7

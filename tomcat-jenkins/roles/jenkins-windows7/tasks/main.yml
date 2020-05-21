@@ -1,5 +1,4 @@
 ---
-
 - name: ensure that java is installed
   win_chocolatey:
     name: jdk8

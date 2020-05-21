@@ -1,5 +1,4 @@
 ---
-
 - name: install java
   win_chocolatey:
     name: jdk8
