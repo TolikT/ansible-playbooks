@@ -1,0 +1,39 @@
+= Kafka playbook with Kafka and Zookeeper roles
+
+Each role contains appropriate systemd service configuration
+
+== Requirements
+. Java 8
+. Ansible 2.8.10
+
+== Zookeeper
+Installation of Zookeeper cluster that is verified with `3.6.1` Zookeeper version
+
+== Kafka
+Kafka cluster installation
+
+=== Verified versions
+
+* Kafka `2.5.0`
+* Scala `2.13`
+
+=== Fixed issues
+
+* link:https://github.com/confluentinc/cp-docker-images/issues/520[Logs rotation]
+
+== Execution
+
+Following tasks are available
+
+* install: install and configure software without running
+* start: start and enable systemd services for installed components
+* stop: stop and disable systemd services
+* uninstall: stop + remove related files
+* info: print an info about requested software
+
+Each task can be executed specifying tags, for example
+
+[code, bash]
+----
+ansible-playbook -K --tags info
+----
