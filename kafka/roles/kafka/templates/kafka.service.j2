@@ -1,0 +1,21 @@
+[Unit]
+Description=Apache Kafka
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target
+After=network.target zookeeper.service
+
+[Service]
+Type=simple
+Environment=KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+ExecStart={{ KAFKA_START_COMMAND }}
+ExecStop={{ KAFKA_STOP_COMMAND }}
+User={{ OS_KAFKA_USER }}
+Group={{ OS_KAFKA_GROUP }}
+Restart=on-abnormal
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+Alias=kafka.service

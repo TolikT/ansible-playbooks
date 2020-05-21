@@ -1,0 +1,11 @@
+---
+KAFKA_SOURCE_FOLDER: kafka_{{ KAFKA_SCALA_VERSION }}-{{ KAFKA_VERSION }}
+KAFKA_TAR: "{{ KAFKA_SOURCE_FOLDER }}.tgz"
+KAFKA_URL: "https://downloads.apache.org/kafka/{{ KAFKA_VERSION }}/{{ KAFKA_TAR }}"
+INSTALLATION_DIR: /opt
+KAFKA_HOME: "{{ INSTALLATION_DIR }}/kafka"
+KAFKA_LOG_DIR: /var/log/kafka
+KAFKA_START_COMMAND: "/bin/sh -c '{{ KAFKA_HOME }}/bin/kafka-server-start.sh {{ KAFKA_HOME }}/config/server.properties'"
+KAFKA_STOP_COMMAND: "/bin/sh -c '{{ KAFKA_HOME }}/bin/kafka-server-stop.sh'"
+OS_KAFKA_USER: kafka
+OS_KAFKA_GROUP: kafka

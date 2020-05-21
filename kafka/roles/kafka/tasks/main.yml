@@ -1,0 +1,60 @@
+---
+- name: Create Kafka group
+  group:
+    name: "{{ OS_KAFKA_GROUP }}"
+    state: present
+    system: yes
+  tags: install
+
+- name: Create Kafka user
+  user:
+    name: "{{ OS_KAFKA_USER }}"
+    group: "{{ OS_KAFKA_GROUP }}"
+    state: present
+    create_home: no
+    system: yes
+  tags: install
+
+- name: Check if Kafka has already been downloaded and unpacked
+  stat:
+    path: "{{ KAFKA_HOME }}"
+  register: kafka
+  tags: ['start', 'stop', 'install', 'uninstall', 'info']
+
+- name: Install Kafka
+  include: install.yml
+  when: not kafka.stat.exists
+  tags: install
+
+- name: Start Kafka
+  systemd:
+    daemon_reload: yes
+    name: kafka
+    state: started
+    enabled: yes
+  when: kafka.stat.exists
+  tags: start
+
+- name: Stop Kafka
+  systemd:
+    daemon_reload: yes
+    name: kafka
+    state: stopped
+    enabled: no
+  when: kafka.stat.exists
+  tags: ['stop', 'uninstall']
+
+- name: Check Kafka service status
+  shell: systemctl status kafka
+  ignore_errors: yes
+  tags: ['start', 'stop', 'uninstall', 'info']
+  register: kafka_status
+
+- debug: msg="{{ kafka_status.stdout }}"
+  tags: ['start', 'stop', 'uninstall', 'info']
+
+- name: Uninstall Kafka
+  include: uninstall.yml
+  when: kafka.stat.exists
+  tags: uninstall
+

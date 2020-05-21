@@ -1,0 +1,69 @@
+---
+- name: Download Kafka
+  get_url:
+    url: "{{ KAFKA_URL }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    mode: 0644
+
+- name: Unpack Kafka
+  unarchive:
+    src: "{{ INSTALLATION_DIR }}/{{ KAFKA_TAR }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    remote_src: yes
+    mode: 0644
+    list_files: yes
+  register: archive_contents
+
+- name: Create Kafka home directory
+  copy:
+    src: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    dest: "{{ KAFKA_HOME }}"
+    group: "{{ OS_KAFKA_GROUP }}"
+    owner: "{{ OS_KAFKA_USER }}"
+    remote_src: yes
+
+- name: Place log4j.properties with correct logs rotaion
+  copy:
+    src: log4j.properties
+    dest: "{{ KAFKA_HOME }}/config/log4j.properties"
+
+- name: Set Kafka directory permissions
+  file:
+    path: "{{ KAFKA_HOME }}"
+    state: directory
+    group: "{{ OS_KAFKA_GROUP }}"
+    owner: "{{ OS_KAFKA_USER }}"
+    mode: 0755
+    recurse: yes
+
+- name: Remove Kafka archive
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ KAFKA_TAR }}"
+    state: absent
+
+- name: Remove unpacked directory
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    state: absent
+
+- name: Create Kafka logs directory
+  file:
+    path: "{{ KAFKA_LOG_DIR }}"
+    state: directory
+    group: "{{ OS_KAFKA_GROUP }}"
+    owner: "{{ OS_KAFKA_USER }}"
+    mode: 0777
+    recurse: yes
+
+- name: Configure server.properties
+  template:
+    src: server.properties.j2
+    dest: "{{ KAFKA_HOME }}/config/server.properties"
+    group: "{{ OS_KAFKA_GROUP }}"
+    owner: "{{ OS_KAFKA_USER }}"
+    mode: 0644
+
+- name: Place Kafka systemd service file to /etc/systemd/system
+  template:
+    src: kafka.service.j2
+    dest: /etc/systemd/system//kafka.service
