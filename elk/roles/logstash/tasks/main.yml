@@ -1,0 +1,59 @@
+---
+- name: Create Logstash group
+  group:
+    name: "{{ LOGSTASH_OS_GROUP }}"
+    state: present
+    system: yes
+  tags: install
+
+- name: Create Logstash user
+  user:
+    name: "{{ LOGSTASH_OS_USER }}"
+    group: "{{ LOGSTASH_OS_GROUP }}"
+    state: present
+    create_home: no
+    system: yes
+  tags: install
+
+- name: Check if Logstash has already been downloaded and unpacked
+  stat:
+    path: "{{ LOGSTASH_HOME }}"
+  register: logstash
+  tags: ['start', 'stop', 'install', 'uninstall', 'info']
+
+- name: Install Logstash
+  include: install.yml
+  when: not logstash.stat.exists
+  tags: install
+
+- name: Start Logstash
+  systemd:
+    daemon_reload: yes
+    name: logstash
+    state: started
+    enabled: yes
+  when: logstash.stat.exists
+  tags: start
+
+- name: Stop Logstash
+  systemd:
+    daemon_reload: yes
+    name: logstash
+    state: stopped
+    enabled: no
+  when: logstash.stat.exists
+  tags: ['stop', 'uninstall']
+
+- name: Check Logstash service status
+  shell: systemctl status logstash
+  ignore_errors: yes
+  tags: ['start', 'stop', 'uninstall', 'info']
+  register: logstash_status
+
+- debug: msg="{{ logstash_status.stdout }}"
+  tags: ['start', 'stop', 'uninstall', 'info']
+
+- name: Uninstall Logstash
+  include: uninstall.yml
+  when: logstash.stat.exists
+  tags: uninstall

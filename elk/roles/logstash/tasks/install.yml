@@ -1,0 +1,45 @@
+---
+- name: Download Logstash
+  get_url:
+    url: "{{ LOGSTASH_URL }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    mode: 0644
+
+- name: Unpack Logstash
+  unarchive:
+    src: "{{ INSTALLATION_DIR }}/{{ LOGSTASH_TAR }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    remote_src: yes
+    mode: 0644
+    list_files: yes
+  register: archive_contents
+
+- name: Create Logstash home directory
+  copy:
+    src: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    dest: "{{ LOGSTASH_HOME }}"
+    remote_src: yes
+
+- name: Set Logstash directory permissions
+  file:
+    path: "{{ LOGSTASH_HOME }}"
+    state: directory
+    group: "{{ LOGSTASH_OS_GROUP }}"
+    owner: "{{ LOGSTASH_OS_USER }}"
+    mode: 0755
+    recurse: yes
+
+- name: Remove Logstash archive
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ LOGSTASH_TAR }}"
+    state: absent
+
+- name: Remove unpacked directory
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    state: absent
+
+- name: Place Logstash systemd service file to /etc/systemd/system
+  template:
+    src: logstash.service.j2
+    dest: /etc/systemd/system/logstash.service

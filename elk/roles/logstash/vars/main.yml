@@ -1,0 +1,9 @@
+---
+LOGSTASH_TAR: "logstash-{{ LOGSTASH_VERSION }}.tar.gz"
+LOGSTASH_URL: "https://artifacts.elastic.co/downloads/logstash/{{ LOGSTASH_TAR }}"
+INSTALLATION_DIR: /opt
+LOGSTASH_HOME: "{{ INSTALLATION_DIR }}/logstash"
+LOGSTASH_SCRIPT_PATH: "{{ LOGSTASH_HOME }}/bin/logstash"
+LOGSTASH_START_COMMAND: "/bin/sh -c '{{ LOGSTASH_SCRIPT_PATH }} -f {{ LOGSTASH_HOME }}/config/logstash-sample.conf'"
+LOGSTASH_OS_USER: logstash
+LOGSTASH_OS_GROUP: logstash
