@@ -1,0 +1,29 @@
+= tomcat-jenkins role
+
+Jenkins with Tomcat deployment
+
+== Possible issues
+
+NOTE: this playbook was tested with old Ansible version, so probably there are no such issues at the moment
+
+. https://github.com/ansible/ansible/issues/14426 - as workaround pushed configuration as root
+. https://github.com/ansible/ansible/issues/13856 - installed Windows Management Framework 4.0
+
+== Execution
+[code, bash]
+----
+ansible-playbook -i hosts site.yml --ask-vault-pass
+----
+
+== How-to
+
+=== Vault encryption
+[code, bash]
+----
+ansible-vault create filename
+----
+
+=== Windows connection configuration
+. link:https://support.microsoft.com/en-us/help/3080079/update-to-add-rds-support-for-tls-1.1-and-tls-1.2-in-windows-7-or-windows-server-2008-r2[Install TLS 1.2]
+. link:https://github.com/ansible/ansible/blob/devel/examples/scripts/upgrade_to_ps3.ps1[Upgrade Powershell to 3.0 version]
+. link:https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1[Run remote configuration script]
