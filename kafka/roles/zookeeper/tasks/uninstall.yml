@@ -1,0 +1,15 @@
+---
+- name: Delete Zookeeper installation dir
+  file:
+    path: "{{ ZOOKEEPER_HOME }}"
+    state: absent
+
+- name: Delete Zookeeper data dir
+  file:
+    path: "{{ ZOOKEEPER_DATA_DIR }}"
+    state: absent
+
+- name: Delete Zookeeper log dir
+  file:
+    path: "{{ ZOOKEEPER_LOG_DIR }}"
+    state: absent

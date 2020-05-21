@@ -1,0 +1,20 @@
+[Unit]
+Description=Apache Zookeeper
+Documentation=http://zookeeper.apache.org
+Requires=network.target
+After=network.target 
+
+[Service]
+Type=simple
+ExecStart={{ ZOOKEEPER_START_COMMAND }}
+ExecStop={{ ZOOKEEPER_STOP_COMMAND }}
+User={{ OS_ZOOKEEPER_USER }}
+Group={{ OS_ZOOKEEPER_GROUP }}
+Restart=on-abnormal
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+Alias=zookeeper.service

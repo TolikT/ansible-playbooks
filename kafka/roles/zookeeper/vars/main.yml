@@ -1,0 +1,13 @@
+---
+ZOOKEEPER_TAR: "apache-zookeeper-{{ ZOOKEEPER_VERSION }}-bin.tar.gz"
+ZOOKEEPER_URL: "https://downloads.apache.org/zookeeper/zookeeper-{{ ZOOKEEPER_VERSION }}/{{ ZOOKEEPER_TAR }}"
+INSTALLATION_DIR: /opt
+ZOOKEEPER_DATA_DIR: /var/lib/zookeeper
+ZOOKEEPER_LOG_DIR: /var/log/zookeeper
+ZOOKEEPER_HOME: "{{ INSTALLATION_DIR }}/zookeeper"
+ZOOKEEPER_SCRIPT_PATH: "{{ ZOOKEEPER_HOME }}/bin/zkServer.sh"
+ZOOKEEPER_START_COMMAND: "/bin/sh -c '{{ ZOOKEEPER_SCRIPT_PATH }} start-foreground'"
+ZOOKEEPER_STOP_COMMAND: "/bin/sh -c '{{ ZOOKEEPER_SCRIPT_PATH }} stop'"
+ZOOKEEPER_STATUS_COMMAND: "{{ ZOOKEEPER_SCRIPT_PATH }} status"
+OS_ZOOKEEPER_USER: zookeeper
+OS_ZOOKEEPER_GROUP: zookeeper

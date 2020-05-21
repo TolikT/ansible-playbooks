@@ -1,0 +1,88 @@
+---
+- name: Download Zookeeper
+  get_url:
+    url: "{{ ZOOKEEPER_URL }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    mode: 0644
+
+- name: Unpack Zookeeper
+  unarchive:
+    src: "{{ INSTALLATION_DIR }}/{{ ZOOKEEPER_TAR }}"
+    dest: "{{ INSTALLATION_DIR }}"
+    remote_src: yes
+    mode: 0644
+    list_files: yes
+  register: archive_contents
+
+- name: Create Zookeeper home directory
+  copy:
+    src: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    dest: "{{ ZOOKEEPER_HOME }}"
+    remote_src: yes
+
+- name: Set Zookeeper directory permissions
+  file:
+    path: "{{ ZOOKEEPER_HOME }}"
+    state: directory
+    group: "{{ OS_ZOOKEEPER_GROUP }}"
+    owner: "{{ OS_ZOOKEEPER_USER }}"
+    mode: 0755
+    recurse: yes
+
+- name: Set Zookeeper audit logs directory permissions
+  file:
+    path: "{{ ZOOKEEPER_HOME }}/logs"
+    state: directory
+    group: "{{ OS_ZOOKEEPER_GROUP }}"
+    owner: "{{ OS_ZOOKEEPER_USER }}"
+    mode: 0777
+    recurse: yes
+
+- name: Remove Zookeeper archive
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ ZOOKEEPER_TAR }}"
+    state: absent
+
+- name: Remove unpacked directory
+  file:
+    path: "{{ INSTALLATION_DIR }}/{{ archive_contents.files[0].split('/')[0] }}/"
+    state: absent
+
+- name: Create Zookeeper data directory
+  file:
+    path: "{{ ZOOKEEPER_DATA_DIR }}"
+    state: directory
+    group: "{{ OS_ZOOKEEPER_GROUP }}"
+    owner: "{{ OS_ZOOKEEPER_USER }}"
+    mode: 0777
+    recurse: yes
+
+- name: Create Zookeeper logs directory
+  file:
+    path: "{{ ZOOKEEPER_LOG_DIR }}"
+    state: directory
+    group: "{{ OS_ZOOKEEPER_GROUP }}"
+    owner: "{{ OS_ZOOKEEPER_USER }}"
+    mode: 0777
+    recurse: yes
+
+- name: Configure zoo.cfg
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ ZOOKEEPER_HOME }}/conf/zoo.cfg"
+
+- name: Configure myid
+  template:
+    src: myid.j2
+    dest: "{{ ZOOKEEPER_DATA_DIR }}/myid"
+
+- name: Configure logs directory
+  lineinfile:
+    path: "{{ ZOOKEEPER_HOME }}/conf/log4j.properties"
+    regexp: "^zookeeper.log.dir="
+    line: "zookeeper.log.dir={{ ZOOKEEPER_LOG_DIR }}"
+
+- name: Place Zookeeper systemd service file to /etc/systemd/system
+  template:
+    src: zookeeper.service.j2
+    dest: /etc/systemd/system/zookeeper.service
