@@ -1,0 +1,17 @@
+---
+- name: Install Zookeeper
+  hosts: zookeeper
+  become: yes
+  roles:
+    - role: zookeeper
+      vars: 
+        ZOOKEEPER_VERSION: "3.6.1"
+
+- name: Install Kafka
+  hosts: kafka
+  become: yes
+  roles:
+    - role: kafka
+      vars:
+        KAFKA_VERSION: "2.5.0"
+        KAFKA_SCALA_VERSION: "2.13"
