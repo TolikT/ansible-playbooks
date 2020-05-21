@@ -1,0 +1,22 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  become: yes
+  roles:
+    - role: elasticsearch
+      vars: 
+        ELASTICSEARCH_VERSION: "7.7.0"
+- name: Logstash
+  hosts: logstash
+  become: yes
+  roles:
+    - role: logstash
+      vars: 
+        LOGSTASH_VERSION: "7.7.0"
+- name: Kibana
+  hosts: kibana
+  become: yes
+  roles:
+    - role: kibana
+      vars: 
+        KIBANA_VERSION: "7.7.0"
