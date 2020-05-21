@@ -1,0 +1,5 @@
+---
+- name: Delete Elasticsearch installation dir
+  file:
+    path: "{{ ELASTICSEARCH_HOME }}"
+    state: absent

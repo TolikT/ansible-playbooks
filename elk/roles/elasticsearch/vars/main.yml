@@ -1,0 +1,11 @@
+---
+ELASTICSEARCH_TAR: "elasticsearch-{{ ELASTICSEARCH_VERSION }}-linux-x86_64.tar.gz"
+ELASTICSEARCH_URL: "https://artifacts.elastic.co/downloads/elasticsearch/{{ ELASTICSEARCH_TAR }}"
+INSTALLATION_DIR: /opt
+ELASTICSEARCH_HOME: "{{ INSTALLATION_DIR }}/elasticsearch"
+ELASTICSEARCH_SCRIPT_PATH: "{{ ELASTICSEARCH_HOME }}/bin/elasticsearch"
+ELASTICSEARCH_PID_DIR: /var/run/elasticsearch
+ELASTICSEARCH_START_COMMAND: "/bin/sh -c '{{ ELASTICSEARCH_SCRIPT_PATH }} -p ${PID_DIR}/elasticsearch.pid --quiet'"
+ELASTICSEARCH_STOP_COMMAND: "/bin/pkill -F ${PID_DIR}/elasticsearch.pid"
+ELASTICSEARCH_OS_USER: elasticsearch
+ELASTICSEARCH_OS_GROUP: elasticsearch

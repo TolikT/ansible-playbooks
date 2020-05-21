@@ -1,0 +1,59 @@
+---
+- name: Create Elasticsearch group
+  group:
+    name: "{{ ELASTICSEARCH_OS_GROUP }}"
+    state: present
+    system: yes
+  tags: install
+
+- name: Create Elasticsearch user
+  user:
+    name: "{{ ELASTICSEARCH_OS_USER }}"
+    group: "{{ ELASTICSEARCH_OS_GROUP }}"
+    state: present
+    create_home: no
+    system: yes
+  tags: install
+
+- name: Check if Elasticsearch has already been downloaded and unpacked
+  stat:
+    path: "{{ ELASTICSEARCH_HOME }}"
+  register: es
+  tags: ['start', 'stop', 'install', 'uninstall', 'info']
+
+- name: Install Elasticsearch
+  include: install.yml
+  when: not es.stat.exists
+  tags: install
+
+- name: Start Elasticsearch
+  systemd:
+    daemon_reload: yes
+    name: elasticsearch
+    state: started
+    enabled: yes
+  when: es.stat.exists
+  tags: start
+
+- name: Stop Elasticsearch
+  systemd:
+    daemon_reload: yes
+    name: elasticsearch
+    state: stopped
+    enabled: no
+  when: es.stat.exists
+  tags: ['stop', 'uninstall']
+
+- name: Check Elasticsearch service status
+  shell: systemctl status elasticsearch
+  ignore_errors: yes
+  tags: ['start', 'stop', 'uninstall', 'info']
+  register: es_status
+
+- debug: msg="{{ es_status.stdout }}"
+  tags: ['start', 'stop', 'uninstall', 'info']
+
+- name: Uninstall Elasticsearch
+  include: uninstall.yml
+  when: es.stat.exists
+  tags: uninstall
