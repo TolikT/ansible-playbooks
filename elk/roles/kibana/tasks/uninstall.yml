@@ -1,0 +1,5 @@
+---
+- name: Delete Kibana installation dir
+  file:
+    path: "{{ KIBANA_HOME }}"
+    state: absent

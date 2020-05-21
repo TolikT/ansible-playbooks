@@ -1,0 +1,16 @@
+[Unit]
+Description=Kibana
+Documentation=https://www.elastic.co/kibana
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{ KIBANA_START_COMMAND }}
+User={{ KIBANA_OS_USER }}
+Group={{ KIBANA_OS_GROUP }}
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+Alias=kibana.service

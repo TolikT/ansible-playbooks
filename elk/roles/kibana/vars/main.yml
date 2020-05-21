@@ -1,0 +1,9 @@
+---
+KIBANA_TAR: "kibana-{{ KIBANA_VERSION }}-linux-x86_64.tar.gz"
+KIBANA_URL: "https://artifacts.elastic.co/downloads/kibana/{{ KIBANA_TAR }}"
+INSTALLATION_DIR: /opt
+KIBANA_HOME: "{{ INSTALLATION_DIR }}/kibana"
+KIBANA_SCRIPT_PATH: "{{ KIBANA_HOME }}/bin/kibana"
+KIBANA_START_COMMAND: "/bin/sh -c '{{ KIBANA_SCRIPT_PATH }}'"
+KIBANA_OS_USER: kibana
+KIBANA_OS_GROUP: kibana

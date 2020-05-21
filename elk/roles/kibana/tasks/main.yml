@@ -1,0 +1,59 @@
+---
+- name: Create Kibana group
+  group:
+    name: "{{ KIBANA_OS_GROUP }}"
+    state: present
+    system: yes
+  tags: install
+
+- name: Create Kibana user
+  user:
+    name: "{{ KIBANA_OS_USER }}"
+    group: "{{ KIBANA_OS_GROUP }}"
+    state: present
+    create_home: no
+    system: yes
+  tags: install
+
+- name: Check if Kibana has already been downloaded and unpacked
+  stat:
+    path: "{{ KIBANA_HOME }}"
+  register: kibana
+  tags: ['start', 'stop', 'install', 'uninstall', 'info']
+
+- name: Install Kibana
+  include: install.yml
+  when: not kibana.stat.exists
+  tags: install
+
+- name: Start Kibana
+  systemd:
+    daemon_reload: yes
+    name: kibana
+    state: started
+    enabled: yes
+  when: kibana.stat.exists
+  tags: start
+
+- name: Stop Kibana
+  systemd:
+    daemon_reload: yes
+    name: kibana
+    state: stopped
+    enabled: no
+  when: kibana.stat.exists
+  tags: ['stop', 'uninstall']
+
+- name: Check Kibana service status
+  shell: systemctl status kibana
+  ignore_errors: yes
+  tags: ['start', 'stop', 'uninstall', 'info']
+  register: kibana_status
+
+- debug: msg="{{ kibana_status.stdout }}"
+  tags: ['start', 'stop', 'uninstall', 'info']
+
+- name: Uninstall Kibana
+  include: uninstall.yml
+  when: kibana.stat.exists
+  tags: uninstall
