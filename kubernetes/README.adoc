@@ -1,0 +1,26 @@
+= Kubernetes
+
+This folder contains playbooks that are related to kubernetes cluster management
+
+== Control plane certificates renewal
+
+These playbooks assume that cluster is managed by kubeadm.
+After certificates renewal with custom expiration date it's still possible to manage certificates by kubeadm.
+
+Before running playbook:
+
+* create inventory file
+* check roles' defaults and modify playbook with your values
+
+[code,bash]
+----
+ansible-playbook -i <inventory> <playbook>
+----
+
+=== Using ansible openssl modules
+
+Renews kubernetes control plane certificates using ansible modules.
+
+=== Using openssl tool
+
+Renews kubernetes control plane certificates using openssl.
