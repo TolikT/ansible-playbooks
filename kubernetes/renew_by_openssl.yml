@@ -1,0 +1,7 @@
+---
+- hosts: kubernetes_master
+  serial: 1
+  become: yes
+  become_method: sudo
+  roles:
+    - role: renew-certificates-openssl

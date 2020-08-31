@@ -1,0 +1,5 @@
+---
+certificates:
+  location: /etc/kubernetes/pki
+  expiration_days: 365
+  update_enddate: true
