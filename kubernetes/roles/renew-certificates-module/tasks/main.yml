@@ -53,12 +53,11 @@
         - set_fact:
             certificates_opt_mapping: "{{ _certificates_opt_mapping }}"
           when: certificates_renewal_list is not defined
-          with_items: "{{ _certificates_opt_mapping }}"
     - name: Save old certificates
       synchronize:
         src: "{{ certificates.location }}/"
         dest: >-
-          "{{ certificates.location | regex_replace('\\/$', '') }}-backup-{{ lookup('pipe','date +%Y%m%d%H%M%S') }}"
+          "{{ certificates.location | regex_replace('\\/$', '') }}-backup-{{ ansible_date_time.iso8601_basic_short }}"
       delegate_to: "{{ inventory_hostname }}"
     - name: Ensure necessary directories exist
       file:
@@ -155,7 +154,7 @@
         - - 'crt'
           - 'key'
     - name: Restart systemd services
-        when: restart_services is defined
+        when: restart_services is defined and (restart_services | difference(['docker', 'kubelet']) | length == 0)
         block:
           - name: Restart
             systemd:
